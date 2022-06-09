@@ -1,13 +1,11 @@
-import { MenuItem, Select, Typography } from "@material-ui/core";
-import React, { memo } from "react";
-import { Bar } from "react-chartjs-2";
+import { MenuItem, Select, Typography } from '@material-ui/core';
+import React, { memo } from 'react';
+import { Bar } from 'react-chartjs-2';
 
 interface IBarChartProps {
   barChartData: any;
   countriesAmount: number;
-  additionalOptions?: {
-    [key: string]: any;
-  };
+  additionalOptions?: Record<string, any>;
   handleCountriesAmountChange: (e: React.ChangeEvent<{value: unknown}>) => void;
 };
 
@@ -19,7 +17,7 @@ const BarChart: React.FC<IBarChartProps> = memo(({
   additionalOptions,
   handleCountriesAmountChange,
 }) => {
-  // place for creating styles
+  // place for creating styles (from useStyles hook)
   return (
     <div>
       <h2>Ranked Charts</h2>

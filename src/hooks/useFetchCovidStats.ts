@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { getCovidDataRequest } from "../api";
-import { ICountry } from "../types";
+import { useState, useEffect } from 'react';
+import { getCovidDataRequest } from '../api';
+import { ICountry } from '../types';
 
 const useFetchCovidStats = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -9,8 +9,8 @@ const useFetchCovidStats = () => {
 
   useEffect(() => {
     getCovidDataRequest()
-      .then((res) => {
-        
+      .then((res: Record<string, ICountry>) => {
+
         const covidDataValuesMap = new Map<ICountry['location'], ICountry>( 
           Object.values(res)
             .map((country: ICountry) => [country.location, country])
@@ -20,9 +20,10 @@ const useFetchCovidStats = () => {
 
         const defaultCountry = covidDataValuesMap.get('International')!;
   
-        setDefaultCountry(defaultCountry)
-
-      }).finally(() => setIsLoading(false)); // todo add catch
+        setDefaultCountry(defaultCountry);
+      })
+      .catch((err) => console.error('blablabla some stupid error', err))
+      .finally(() => setIsLoading(false));
   }, []);
 
   return { isLoading, covidData, defaultCountry }

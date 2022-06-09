@@ -25,7 +25,7 @@ const LineChart: React.FC<ILineChartProps> = memo(({
   lineChartData,
   additionalOptions,
 }) => {
-  // place for creating styles
+  // place for creating styles (from useStyles hook)
   return (
     <div>
       <h2>Reported Cases</h2>
@@ -33,7 +33,7 @@ const LineChart: React.FC<ILineChartProps> = memo(({
       <Box display="flex" textAlign="center" m="1" flexDirection="column">
         <h3>Select amount of days to show</h3>
         <Box>
-          {daysAmount.map((day) => (
+          {daysAmount.map((day) => ( //have no idea what is cumulative mode so I made a day switcher
             <Button key={day} onClick={() => handleDaysAmount(day)}>
               {!day ? 'Show all' : `Last ${day} Days`}
             </Button>

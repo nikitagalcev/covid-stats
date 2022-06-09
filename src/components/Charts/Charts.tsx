@@ -1,8 +1,8 @@
-import React, { memo, useState, useEffect, useMemo, useCallback } from "react";
-import { Box, Tab, Tabs } from "@material-ui/core";
-import LineChart from "../LineChart/LineChart";
-import BarChart from "../BarChart/BarChart";
-import { ICountry } from "../../types";
+import React, { memo, useState, useEffect, useMemo, useCallback } from 'react';
+import { Box, Tab, Tabs } from '@material-ui/core';
+import LineChart from '../LineChart/LineChart';
+import BarChart from '../BarChart/BarChart';
+import { ICountry } from '../../types';
 
 import { Chart as ChartJS, registerables } from 'chart.js';
 ChartJS.register(...registerables);
@@ -29,7 +29,7 @@ const Charts: React.FC<IChartsProps> = memo(({
   currentCountry,
   covidDataValues,
 }) => {
-  const [tabShown, setTabShown] = useState<string>(chartsNames.LINE);
+  const [tabShown, setTabShown] = useState<chartsNames>(chartsNames.LINE);
   const [dateCount, setDateCount] = useState<number>(0);
   const [countriesAmount, setCountriesAmount] = useState<number>(10); // amount of countries to shown
   const [startCountryIndex, setStartCountyIndex] = useState<number>(0); // index of selected country in array
@@ -47,20 +47,20 @@ const Charts: React.FC<IChartsProps> = memo(({
     setCountriesAmount(e.target.value as number);
   }, []);
 
-  const handleSwitchTabs = useCallback((tabName: string) => setTabShown(tabName), []);
+  const handleSwitchTabs = useCallback((tabName: chartsNames) => setTabShown(tabName), []);
 
   const lineChartData = useMemo(() => ({
     labels: currentCountry.data.map(({ date }) => date).splice(-dateCount), // minus here to move <- from current date
     datasets: [
       {
         data: currentCountry.data.map(({ new_cases }) => new_cases),
-        label: 'Confirmed Cases',
+        label: 'Confirmed Cases (clickable)',
         backgroundColor: 'aquamarine',
         borderColor: 'blue',
       },
       {
         data: currentCountry.data.map(({ new_deaths }) => new_deaths),
-        label: 'Deaths',
+        label: 'Deaths (clickable)',
         backgroundColor: 'tomato',
         borderColor: 'red',
       }
@@ -73,7 +73,7 @@ const Charts: React.FC<IChartsProps> = memo(({
       .map(({ location }) => location),
     datasets: [
       {
-        label: 'Total Cases',
+        label: 'Total Cases (clickable)',
         backgroundColor: 'aquamarine',
         borderColor: 'blue',
         data: covidDataValues
@@ -82,7 +82,7 @@ const Charts: React.FC<IChartsProps> = memo(({
           .map((deaths) => deaths.pop()), // grab only last item in array (actual summary total_deaths)
       },
       {
-        label: 'Total Deaths',
+        label: 'Total Deaths (clickable)',
         data: covidDataValues
           .slice(startCountryIndex, startCountryIndex + countriesAmount)
           .map(({ data }) => data.map(({ total_deaths }) => total_deaths))
@@ -121,7 +121,8 @@ const Charts: React.FC<IChartsProps> = memo(({
             );
 
           default:
-            return null;
+            const _never: never = tabShown
+            return _never;
         }
       })()}
     </Box>

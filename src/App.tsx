@@ -2,12 +2,12 @@ import React, { memo, useEffect, useState, useMemo } from 'react';
 import { debounce } from 'lodash';
 import useFetchCovidStats from './hooks/useFetchCovidStats';
 import './App.css';
-import { Box, TextField } from '@material-ui/core';
+import { Box, LinearProgress, TextField, Typography } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useCallback } from 'react';
 import Charts from './components/Charts/Charts';
 import { ICountry } from './types';
-
+import ThemeSwitcher from './components/ThemeSwitcher/ThemeSwitcher';
 
 const App: React.FC = memo(() => {
   const { isLoading, covidData, defaultCountry } = useFetchCovidStats();
@@ -18,12 +18,12 @@ const App: React.FC = memo(() => {
 
   useEffect(() => {
     if (defaultCountry) {
-      setSelectedCountry(defaultCountry)
+      setSelectedCountry(defaultCountry);
     }
   }, [defaultCountry])
 
-
-  const updateCountry = useCallback(debounce((val: ICountry['location']) => {
+  // propbably I don't need debounce here since I switched to Autocomplete (prev was usual TextField), but will left it as it is for now
+  const updateCountry = useCallback(debounce((val: ICountry['location']) => { 
     const selectedCountry = covidData?.get(val);
     
     if (selectedCountry) {
@@ -35,22 +35,30 @@ const App: React.FC = memo(() => {
     updateCountry(val);
   }, [updateCountry]);
 
-
   if (isLoading) {
-    return <span>LOADING</span>;
+    return (
+      <Box m="0 auto" display="flex" flexDirection="column" justifyContent="center" textAlign="center">
+        <LinearProgress /> 
+        <Typography>Jeesus, you're fetching almost 130mb of JSON, of course you need to wait!</Typography>
+        <Box width="50%" display="flex" flexDirection="column" alignSelf="start" justifyContent="center" textAlign="right">
+          <ThemeSwitcher />
+          <Typography variant='subtitle1'>(Meanwhile you can play with theme toggler)</Typography>
+        </Box>
+      </Box>
+    );
   }
 
   return (
     <Box width="90%" m="0 auto">
       <h1>Covid Statistic</h1>
-
+      <ThemeSwitcher />
       {covidData && defaultCountry ? (
         <Autocomplete
           renderInput={(args) => <TextField label="Country" {...args}/>}
           defaultValue={defaultCountry}
           options={covidDataValues}
           getOptionLabel={(data) => data.location}
-          onInputChange={(e: React.ChangeEvent<{}>, val: ICountry['location']) => handleCountryChange(e, val)}
+          onInputChange={handleCountryChange}
         />
       ) : null}
 
