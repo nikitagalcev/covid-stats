@@ -5,7 +5,7 @@ import { Box, createTheme, ThemeProvider } from '@material-ui/core';
 
 export const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
-export default function AppThemeWrapper() {
+const AppThemeWrapper: React.FC = () => {
   const [type, setType] = useState<'light' | 'dark'>('light');
   const colorMode = useMemo(
     () => ({
@@ -34,3 +34,5 @@ export default function AppThemeWrapper() {
     </ColorModeContext.Provider>
   );
 };
+
+export default AppThemeWrapper
