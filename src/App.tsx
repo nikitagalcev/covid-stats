@@ -1,5 +1,4 @@
 import React, { memo, useEffect, useState, useMemo } from 'react';
-import { debounce } from 'lodash';
 import useFetchCovidStats from './hooks/useFetchCovidStats';
 import './App.css';
 import { Box, LinearProgress, TextField, Typography } from '@material-ui/core';
@@ -13,7 +12,7 @@ const App: React.FC = memo(() => {
   const { isLoading, covidData, defaultCountry } = useFetchCovidStats();
 
   const [selectedCountry, setSelectedCountry] = useState<ICountry>();
-  
+
   const covidDataValues = useMemo(() => [...covidData.values()], [covidData])
 
   useEffect(() => {
@@ -22,23 +21,18 @@ const App: React.FC = memo(() => {
     }
   }, [defaultCountry])
 
-  // propbably I don't need debounce here since I switched to Autocomplete (prev was usual TextField), but will left it as it is for now
-  const updateCountry = useCallback(debounce((val: ICountry['location']) => { 
+  const handleCountryChange = useCallback((_: React.ChangeEvent<{}>, val: ICountry['location']) => {
     const selectedCountry = covidData?.get(val);
-    
+
     if (selectedCountry) {
       setSelectedCountry(selectedCountry);
     }
-  }, 400), [])
-
-  const handleCountryChange = useCallback((_: React.ChangeEvent<{}>, val: ICountry['location']) => {
-    updateCountry(val);
-  }, [updateCountry]);
+  }, [covidData]);
 
   if (isLoading) {
     return (
       <Box m="0 auto" display="flex" flexDirection="column" justifyContent="center" textAlign="center">
-        <LinearProgress /> 
+        <LinearProgress />
         <Typography>Jeesus, you're fetching almost 130mb of JSON, of course you need to wait!</Typography>
         <Box width="50%" display="flex" flexDirection="column" alignSelf="start" justifyContent="center" textAlign="right">
           <ThemeSwitcher />
